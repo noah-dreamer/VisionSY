@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+# PUBLIC TEMPLATE ONLY
+# Replace every <PLACEHOLDER> or __PLACEHOLDER__ before deployment.
+# Never commit production addresses, credentials, certificate paths, or backup destinations.
+
+# =====================================================================
+# VisionSY 官网部署脚本（运行于官网 应用容器 10.0.0.10）
+# 用法：sudo bash deploy/scripts/deploy.sh.example
+#
+# 前置条件：
+#   - 代码位于 /var/www/example（git 仓库）
+#   - .env 已就位（真实密钥来自`<SECRET_MANAGER>`，手工维护）
+#   - php >= 8.2、composer、node >= 20 已安装
+# =====================================================================
+set -euo pipefail
+
+APP_DIR="/var/www/example"
+PHP_BIN="${PHP_BIN:-/usr/bin/php}"
+
+cd "$APP_DIR"
+
+echo "==> [1/7] 进入维护模式"
+$PHP_BIN artisan down --retry=15 || true
+
+echo "==> [2/7] 拉取最新代码"
+git pull --ff-only
+
+echo "==> [3/7] 安装 PHP 依赖（生产模式）"
+composer install --no-dev --prefer-dist --optimize-autoloader --no-interaction
+
+echo "==> [4/7] 构建前端资源"
+npm ci
+npm run build
+
+echo "==> [5/7] 数据库迁移"
+$PHP_BIN artisan migrate --force
+
+echo "==> [6/7] 重建缓存"
+$PHP_BIN artisan config:cache
+$PHP_BIN artisan route:cache
+$PHP_BIN artisan view:cache
+
+echo "==> [7/7] 重启后台服务并退出维护模式"
+systemctl restart visionsy-queue.service visionsy-scheduler.service
+# php-fpm 部署时改为：systemctl reload php8.3-fpm
+systemctl restart visionsy-site.service || true
+$PHP_BIN artisan up
+
+echo "==> 部署完成 $(date '+%F %T')"

@@ -1,0 +1,219 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ==========================================================================
+   VisionSY 设计系统
+   设计语言：克制、科技感、校园影像、干净、可信、有空间感。
+   所有色彩 / 圆角 / 阴影 token 统一在此声明，页面通过组件类与工具类引用。
+   ========================================================================== */
+
+@layer base {
+    :root {
+        /* 表面 */
+        --surface-page: 248 249 251;   /* 暖白纸面（亮色） */
+        --surface-card: 255 255 255;
+        --surface-ink: 12 15 26;       /* 深色面 */
+
+        /* 文本 */
+        --text-strong: 26 30 43;
+        --text-body: 61 67 86;
+        --text-muted: 100 110 133;
+
+        /* 线条 */
+        --line: 220 224 232;
+        --line-strong: 185 192 207;
+
+        /* 品牌 */
+        --brand: 31 89 230;
+        --accent: 124 92 255;
+    }
+
+    html {
+        @apply antialiased scroll-smooth;
+        -webkit-font-smoothing: antialiased;
+        text-rendering: optimizeLegibility;
+    }
+
+    body {
+        @apply bg-ink-50 font-sans text-ink-900;
+        font-feature-settings: 'cv11', 'ss01';
+    }
+
+    ::selection {
+        @apply bg-brand-500/20 text-brand-900;
+    }
+
+    [x-cloak] { display: none !important; }
+
+    /* 统一焦点态：清晰但不刺眼 */
+    :focus-visible {
+        @apply outline-none ring-2 ring-brand-500/60 ring-offset-2 ring-offset-white;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        *, ::before, ::after {
+            animation-duration: 0.001ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.001ms !important;
+            scroll-behavior: auto !important;
+        }
+    }
+}
+
+@layer components {
+
+    /* ---------- 容器 ---------- */
+    .shell {
+        @apply mx-auto w-full max-w-shell px-5 sm:px-8;
+    }
+
+    /* ---------- 排版层级 ---------- */
+    .eyebrow {
+        @apply inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-brand-600;
+    }
+    .eyebrow-light {
+        @apply inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-brand-300;
+    }
+    .h-hero {
+        @apply text-4xl font-semibold leading-[1.05] tracking-tight sm:text-5xl lg:text-6xl;
+        text-wrap: balance;
+    }
+    .h-page {
+        @apply text-3xl font-semibold leading-tight tracking-tight sm:text-4xl;
+        text-wrap: balance;
+    }
+    .h-section {
+        @apply text-2xl font-semibold leading-tight tracking-tight sm:text-3xl;
+        text-wrap: balance;
+    }
+    .h-card {
+        @apply text-base font-semibold tracking-tight text-ink-900;
+    }
+    .lead {
+        @apply text-base leading-relaxed text-ink-600 sm:text-lg;
+    }
+    .prose-muted {
+        @apply text-sm leading-relaxed text-ink-600;
+    }
+    .text-gradient {
+        @apply bg-gradient-to-r from-brand-600 via-brand-500 to-accent-500 bg-clip-text text-transparent;
+    }
+
+    /* ---------- 按钮 ---------- */
+    .btn {
+        @apply inline-flex select-none items-center justify-center gap-2 whitespace-nowrap rounded-xl
+               px-5 py-2.5 text-sm font-medium transition duration-150 ease-out
+               focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/60
+               focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50;
+    }
+    .btn-sm { @apply rounded-lg px-3.5 py-2 text-xs; }
+    .btn-primary {
+        @apply btn bg-brand-600 text-white shadow-glow
+               hover:-translate-y-px hover:bg-brand-700 active:translate-y-0 active:bg-brand-800;
+    }
+    .btn-secondary {
+        @apply btn border border-ink-200 bg-white text-ink-800 shadow-soft
+               hover:-translate-y-px hover:border-ink-300 hover:bg-ink-50 active:translate-y-0;
+    }
+    .btn-ghost {
+        @apply btn text-ink-600 hover:bg-ink-100 hover:text-ink-900;
+    }
+    .btn-danger {
+        @apply btn border border-red-200 bg-white text-red-600
+               hover:border-red-300 hover:bg-red-50 active:bg-red-100;
+    }
+    /* 深色面上的按钮 */
+    .btn-on-dark {
+        @apply btn border border-white/15 bg-white/10 text-white backdrop-blur
+               hover:-translate-y-px hover:border-white/25 hover:bg-white/15;
+    }
+    .btn-light {
+        @apply btn bg-white text-ink-900 shadow-lift
+               hover:-translate-y-px hover:bg-ink-50;
+    }
+
+    /* ---------- 卡片 ---------- */
+    .card {
+        @apply rounded-2xl border border-ink-100 bg-white shadow-card;
+    }
+    .card-hover {
+        @apply transition duration-200 ease-out hover:-translate-y-0.5 hover:border-ink-200 hover:shadow-lift;
+    }
+    .card-quiet {
+        @apply rounded-2xl border border-ink-100 bg-ink-50/60;
+    }
+
+    /* 玻璃 / 深色面卡片 */
+    .glass-dark {
+        @apply rounded-2xl border border-white/10 bg-white/[0.06] shadow-inner-line backdrop-blur-xl;
+    }
+
+    /* ---------- 表单 ---------- */
+    .form-label {
+        @apply mb-1.5 block text-sm font-medium text-ink-800;
+    }
+    .form-input {
+        @apply block w-full rounded-xl border border-ink-200 bg-white px-4 py-2.5 text-sm text-ink-900
+               shadow-[inset_0_1px_2px_rgb(12_15_26/0.04)] transition duration-150
+               placeholder:text-ink-400 hover:border-ink-300
+               focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20
+               disabled:cursor-not-allowed disabled:bg-ink-100;
+    }
+    textarea.form-input { @apply leading-relaxed; }
+    .form-hint { @apply mt-1.5 text-xs text-ink-400; }
+    .form-error { @apply mt-1.5 text-sm text-red-600; }
+    .form-checkbox {
+        @apply h-4 w-4 rounded border-ink-300 text-brand-600 transition
+               focus:ring-2 focus:ring-brand-500/30 focus:ring-offset-0;
+    }
+
+    /* ---------- 徽章 ---------- */
+    .badge {
+        @apply inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-medium;
+    }
+    .badge-green { @apply badge bg-emerald-50 text-emerald-700 ring-1 ring-inset ring-emerald-600/20; }
+    .badge-amber { @apply badge bg-amber-50 text-amber-700 ring-1 ring-inset ring-amber-600/20; }
+    .badge-red   { @apply badge bg-red-50 text-red-700 ring-1 ring-inset ring-red-600/20; }
+    .badge-gray  { @apply badge bg-ink-100 text-ink-600 ring-1 ring-inset ring-ink-300/40; }
+    .badge-blue  { @apply badge bg-brand-50 text-brand-700 ring-1 ring-inset ring-brand-600/20; }
+    .badge-dot::before {
+        content: '';
+        @apply h-1.5 w-1.5 rounded-full bg-current opacity-70;
+    }
+
+    /* ---------- 提示条 ---------- */
+    .alert {
+        @apply flex gap-3 rounded-xl border px-4 py-3 text-sm;
+    }
+    .alert-success { @apply alert border-emerald-200 bg-emerald-50 text-emerald-800; }
+    .alert-error   { @apply alert border-red-200 bg-red-50 text-red-800; }
+    .alert-info    { @apply alert border-brand-200 bg-brand-50 text-brand-900; }
+    .alert-warning { @apply alert border-amber-200 bg-amber-50 text-amber-900; }
+
+    /* ---------- 表格 ---------- */
+    .table-head {
+        @apply px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-ink-500;
+    }
+    .table-cell { @apply px-4 py-3.5 text-sm text-ink-800; }
+
+    /* ---------- 品牌标识 ---------- */
+    .brand-mark {
+        @apply flex items-center justify-center rounded-xl bg-gradient-to-br from-brand-500 to-brand-700
+               font-bold text-white shadow-glow;
+    }
+}
+
+@layer utilities {
+    /* 极细的网格 / 噪点背景，用于深色 Hero */
+    .bg-grid-dark {
+        background-image:
+            linear-gradient(to right, rgb(255 255 255 / 0.045) 1px, transparent 1px),
+            linear-gradient(to bottom, rgb(255 255 255 / 0.045) 1px, transparent 1px);
+        background-size: 56px 56px;
+    }
+    .mask-fade-b {
+        -webkit-mask-image: linear-gradient(to bottom, black 55%, transparent 100%);
+        mask-image: linear-gradient(to bottom, black 55%, transparent 100%);
+    }
+}
